@@ -6,4 +6,4 @@
 
 ---
 
-Created with 💖 by [**@EthanThatOneKid](https://etok.codes/)
+Created with 💖 by [**@EthanThatOneKid**](https://etok.codes/)
