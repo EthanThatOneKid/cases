@@ -18,11 +18,13 @@ func ExampleWithAllowedSymbols() {
 	// Output: {map[] map[36:{}]}
 }
 
-func ExampleToCamelCase() {
+func ExampleNameDescriptor_ToCamelCase() {
 	name := NameDescriptor{Parts: []PartDescriptor{
-		PartDescriptor{Text: "abc"},
-		PartDescriptor{Text: "xyz", IsAcronym: true},
-		PartDescriptor{Text: "example"},
+		{Text: "abc"},
+		{Text: "xyz", IsAcronym: true},
+		{Text: "example"},
 	}}
 	fmt.Println(name.ToCamelCase())
+
+	// Output: abcXYZExample
 }
