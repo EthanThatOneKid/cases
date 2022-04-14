@@ -14,17 +14,18 @@ type NameDescriptor struct {
 	Parts []PartDescriptor
 }
 
-type OptFunc func(o *opts)
+type FromOptFunc func(o *fromOpts)
 
-type opts struct {
+type fromOpts struct {
 	// Known acronyms are flagged as so.
 	acronyms map[string]struct{} // set
+
 	// Allowed symbols are treated as lowercase characters.
 	allowedSymbols map[rune]struct{} // set
 }
 
-func WithAcronyms(acronyms []string) OptFunc {
-	return func(o *opts) {
+func WithAcronyms(acronyms []string) FromOptFunc {
+	return func(o *fromOpts) {
 		if o.acronyms == nil {
 			o.acronyms = make(map[string]struct{}, len(acronyms))
 		}
@@ -34,8 +35,8 @@ func WithAcronyms(acronyms []string) OptFunc {
 	}
 }
 
-func WithAllowedSymbols(allowList []rune) OptFunc {
-	return func(o *opts) {
+func WithAllowedSymbols(allowList []rune) FromOptFunc {
+	return func(o *fromOpts) {
 		if o.allowedSymbols == nil {
 			o.allowedSymbols = make(map[rune]struct{}, len(allowList))
 		}
@@ -45,18 +46,14 @@ func WithAllowedSymbols(allowList []rune) OptFunc {
 	}
 }
 
-func (n NameDescriptor) ToCamelCase() string {
+type BuilderFunc func(b *strings.Builder, part PartDescriptor, c rune, i, j int)
+
+func (n NameDescriptor) String(f BuilderFunc) string {
 	var b strings.Builder
 
 	for i, part := range n.Parts {
 		for j, c := range part.Text {
-			switch {
-			case i > 0 && (j == 0 || part.IsAcronym):
-				b.WriteRune(c - ('a' - 'A'))
-
-			default:
-				b.WriteRune(c)
-			}
+			f(&b, part, c, i, j)
 		}
 	}
 

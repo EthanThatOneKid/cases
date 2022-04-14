@@ -7,8 +7,25 @@ import (
 	"github.com/ethanthatonekid/cases/internal/utils"
 )
 
-func FromSnakeCase(ident string, options ...OptFunc) (NameDescriptor, error) {
-	var o opts
+func (n NameDescriptor) ToSnakeCase() string {
+	return n.String(WithSnakeCase())
+}
+
+func WithSnakeCase() BuilderFunc {
+	return func(b *strings.Builder, part PartDescriptor, c rune, i, j int) {
+		switch {
+		case i > 0 && (j == 0 || part.IsAcronym):
+			b.WriteByte('_')
+			b.WriteRune(c)
+
+		default:
+			b.WriteRune(c)
+		}
+	}
+}
+
+func FromSnakeCase(ident string, options ...FromOptFunc) (NameDescriptor, error) {
+	var o fromOpts
 	for _, opt := range options {
 		opt(&o)
 	}
@@ -36,9 +53,6 @@ func FromSnakeCase(ident string, options ...OptFunc) (NameDescriptor, error) {
 			b.Reset()
 
 		case 'A' <= c && c <= 'Z':
-			if c == '$' {
-				fmt.Println("BRUH")
-			}
 			b.WriteRune(c + ('a' - 'A'))
 
 		default:

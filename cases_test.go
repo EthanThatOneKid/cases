@@ -3,7 +3,7 @@ package cases
 import "fmt"
 
 func ExampleWithAcronyms() {
-	var options opts
+	var options fromOpts
 	WithAcronyms([]string{"abc"})(&options)
 	fmt.Println(options)
 
@@ -11,7 +11,7 @@ func ExampleWithAcronyms() {
 }
 
 func ExampleWithAllowedSymbols() {
-	var options opts
+	var options fromOpts
 	WithAllowedSymbols([]rune{'$'})(&options)
 	fmt.Println(options)
 

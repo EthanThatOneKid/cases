@@ -53,17 +53,6 @@ type condenseOpts struct {
 	after int
 }
 
-func WithAcronyms(acronyms []string) CondenseOptFunc {
-	return func(o *condenseOpts) {
-		if o.acronyms == nil {
-			o.acronyms = make(map[string]struct{}, len(acronyms))
-		}
-		for _, acronym := range acronyms {
-			o.acronyms[acronym] = struct{}{} // exists
-		}
-	}
-}
-
 func WithAcronymMap(acronyms map[string]struct{}) CondenseOptFunc {
 	return func(o *condenseOpts) {
 		o.acronyms = acronyms
