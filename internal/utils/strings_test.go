@@ -21,3 +21,11 @@ func ExampleRemoveAccents() {
 
 	// Output: Pokemon
 }
+
+func ExampleWithAfter() {
+	var o condenseOpts
+	WithAfter(0)(&o)
+	fmt.Println(o)
+
+	// Output: {map[] 0}
+}

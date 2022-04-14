@@ -2,7 +2,6 @@ package cases
 
 import (
 	"fmt"
-	"strings"
 )
 
 func ExampleNameDescriptor_AddPart() {
@@ -27,17 +26,7 @@ func ExampleNameDescriptor_String() {
 		{Text: "xyz", IsAcronym: true},
 	}}
 
-	exampleBuilderFunc := func(b *strings.Builder, part PartDescriptor, c rune, _, _ int) {
-		switch {
-		case part.IsAcronym:
-			b.WriteByte('0')
+	fmt.Println(desc.String())
 
-		default:
-			b.WriteRune('1')
-		}
-	}
-
-	fmt.Println(desc.String(exampleBuilderFunc))
-
-	// Output: 111000
+	// Output: abcxyz
 }

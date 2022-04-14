@@ -6,15 +6,15 @@ import (
 	"github.com/ethanthatonekid/cases/internal/utils"
 )
 
-func (n NameDescriptor) ToTitleCase() string {
-	return n.String(WithTitleCase())
+func (n NameDescriptor) ToTrainCase() string {
+	return n.String(WithTrainCase())
 }
 
-func WithTitleCase() BuilderFunc {
+func WithTrainCase() BuilderFunc {
 	return func(b *strings.Builder, part PartDescriptor, c rune, i, j int) {
 		switch {
 		case j == 0 && i > 0:
-			b.WriteByte(' ')
+			b.WriteByte('-')
 			b.WriteRune(c - ('a' - 'A'))
 
 		case j == 0:
@@ -29,7 +29,7 @@ func WithTitleCase() BuilderFunc {
 	}
 }
 
-func FromTitleCase(ident string, options ...ParseOptFunc) (NameDescriptor, error) {
+func FromTrainCase(ident string, options ...ParseOptFunc) (NameDescriptor, error) {
 	var o parseOpts
 	for _, opt := range options {
 		opt(&o)
@@ -41,7 +41,7 @@ func FromTitleCase(ident string, options ...ParseOptFunc) (NameDescriptor, error
 	var b strings.Builder
 	for _, c := range ident {
 		switch {
-		case (c == ' ' || c == '_' || c == '-' || c == '+') && b.Len() > 0:
+		case (c == '-') && b.Len() > 0:
 			token := b.String()
 			_, tokenIsAcronym := o.acronyms[token]
 			if tokenIsAcronym {

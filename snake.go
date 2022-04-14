@@ -24,8 +24,8 @@ func WithSnakeCase() BuilderFunc {
 	}
 }
 
-func FromSnakeCase(ident string, options ...ConvOptFunc) (NameDescriptor, error) {
-	var o convOpts
+func FromSnakeCase(ident string, options ...ParseOptFunc) (NameDescriptor, error) {
+	var o parseOpts
 	for _, opt := range options {
 		opt(&o)
 	}

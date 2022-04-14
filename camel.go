@@ -2,7 +2,6 @@ package cases
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/ethanthatonekid/cases/internal/utils"
 )
@@ -11,20 +10,22 @@ func (n NameDescriptor) ToCamelCase() string {
 	return n.String(WithCamelCase())
 }
 
-func WithCamelCase() BuilderFunc {
-	return func(b *strings.Builder, part PartDescriptor, c rune, i, j int) {
-		switch {
-		case i > 0 && (j == 0 || part.IsAcronym):
-			b.WriteRune(c - ('a' - 'A'))
+func WithCamelCase() BuildOptFunc {
+	return func(o *buildOpts) {
+		o.transformChar = func(part PartDescriptor, c byte, i, j int) []byte {
+			switch {
+			case i > 0 && (j == 0 || part.IsAcronym):
+				return []byte{byte(c - ('a' - 'A'))}
 
-		default:
-			b.WriteRune(c)
+			default:
+				return []byte{byte(c)}
+			}
 		}
 	}
 }
 
-func FromCamelCase(ident string, options ...ConvOptFunc) (NameDescriptor, error) {
-	var o convOpts
+func FromCamelCase(ident string, options ...ParseOptFunc) (NameDescriptor, error) {
+	var o parseOpts
 	for _, opt := range options {
 		opt(&o)
 	}
