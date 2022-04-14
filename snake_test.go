@@ -8,7 +8,7 @@ func ExampleFromSnakeCase() {
 	// Output: {[{abc false} {xyz false}]} <nil>
 }
 
-func ExampleFromSnakeCase_ignoringUppercaseCharacters() {
+func ExampleFromSnakeCase_ignoresUppercaseCharacters() {
 	fmt.Println(FromSnakeCase("aBc_xYz"))
 
 	// Output: {[{abc false} {xyz false}]} <nil>
@@ -49,6 +49,19 @@ func ExampleFromSnakeCase_withSandwichedAllowedSymbol() {
 
 	// Output: {[{abc$ false} {example false}]} <nil>
 }
+
+func ExampleNameDescriptor_ToSnakeCase() {
+	name := NameDescriptor{Parts: []PartDescriptor{
+		{Text: "abc"},
+		{Text: "xyz", IsAcronym: true},
+		{Text: "example"},
+	}}
+	fmt.Println(name.ToSnakeCase())
+
+	// Output: abc_xyz_example
+}
+
+// Output: abcXYZExample
 
 func ExampleFromSnakeCase_errWithLeadingUnallowedSymbol() {
 	fmt.Println(FromSnakeCase("$abc"))

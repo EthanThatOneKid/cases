@@ -23,8 +23,8 @@ func WithCamelCase() BuilderFunc {
 	}
 }
 
-func FromCamelCase(ident string, options ...FromOptFunc) (NameDescriptor, error) {
-	var o fromOpts
+func FromCamelCase(ident string, options ...ConvOptFunc) (NameDescriptor, error) {
+	var o convOpts
 	for _, opt := range options {
 		opt(&o)
 	}
@@ -49,9 +49,12 @@ func FromCamelCase(ident string, options ...FromOptFunc) (NameDescriptor, error)
 	utils.CondenseAcronyms(&tokens, utils.WithAcronymMap(o.acronyms))
 
 	for _, token := range tokens {
-		part := PartDescriptor{Text: token}
-		_, part.IsAcronym = o.acronyms[token]
-		desc.Parts = append(desc.Parts, part)
+		_, tokenIsAcronym := o.acronyms[token]
+		if tokenIsAcronym {
+			desc.AddAcronym(token)
+		} else {
+			desc.AddPart(token)
+		}
 	}
 
 	return desc, nil

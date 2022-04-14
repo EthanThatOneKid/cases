@@ -44,6 +44,17 @@ func ExampleFromCamelCase_withSandwichedAllowedSymbol() {
 	// Output: {[{abc$ false} {example false}]} <nil>
 }
 
+func ExampleNameDescriptor_ToCamelCase() {
+	name := NameDescriptor{Parts: []PartDescriptor{
+		{Text: "abc"},
+		{Text: "xyz", IsAcronym: true},
+		{Text: "example"},
+	}}
+	fmt.Println(name.ToCamelCase())
+
+	// Output: abcXYZExample
+}
+
 func ExampleFromCamelCase_errWithLeadingUnallowedSymbol() {
 	fmt.Println(FromCamelCase("$abc"))
 

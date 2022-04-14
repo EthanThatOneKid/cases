@@ -3,7 +3,7 @@ package cases
 import "fmt"
 
 func ExampleWithAcronyms() {
-	var options fromOpts
+	var options convOpts
 	WithAcronyms([]string{"abc"})(&options)
 	fmt.Println(options)
 
@@ -11,20 +11,9 @@ func ExampleWithAcronyms() {
 }
 
 func ExampleWithAllowedSymbols() {
-	var options fromOpts
+	var options convOpts
 	WithAllowedSymbols([]rune{'$'})(&options)
 	fmt.Println(options)
 
 	// Output: {map[] map[36:{}]}
-}
-
-func ExampleNameDescriptor_ToCamelCase() {
-	name := NameDescriptor{Parts: []PartDescriptor{
-		{Text: "abc"},
-		{Text: "xyz", IsAcronym: true},
-		{Text: "example"},
-	}}
-	fmt.Println(name.ToCamelCase())
-
-	// Output: abcXYZExample
 }

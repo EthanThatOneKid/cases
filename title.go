@@ -1,22 +1,27 @@
 package cases
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/ethanthatonekid/cases/internal/utils"
 )
 
-func (n NameDescriptor) ToSnakeCase() string {
-	return n.String(WithSnakeCase())
+func (n NameDescriptor) ToTitleCase() string {
+	return n.String(WithTitleCase())
 }
 
-func WithSnakeCase() BuilderFunc {
+func WithTitleCase() BuilderFunc {
 	return func(b *strings.Builder, part PartDescriptor, c rune, i, j int) {
 		switch {
-		case i > 0 && j == 0:
-			b.WriteByte('_')
-			b.WriteRune(c)
+		case j == 0 && i > 0:
+			b.WriteByte(' ')
+			b.WriteRune(c - ('a' - 'A'))
+
+		case j == 0:
+			b.WriteRune(c - ('a' - 'A'))
+
+		case part.IsAcronym:
+			b.WriteRune(c - ('a' - 'A'))
 
 		default:
 			b.WriteRune(c)
@@ -24,7 +29,7 @@ func WithSnakeCase() BuilderFunc {
 	}
 }
 
-func FromSnakeCase(ident string, options ...ConvOptFunc) (NameDescriptor, error) {
+func FromTitleCase(ident string, options ...ConvOptFunc) (NameDescriptor, error) {
 	var o convOpts
 	for _, opt := range options {
 		opt(&o)
@@ -34,18 +39,9 @@ func FromSnakeCase(ident string, options ...ConvOptFunc) (NameDescriptor, error)
 	desc := NameDescriptor{}
 
 	var b strings.Builder
-	for i, c := range ident {
+	for _, c := range ident {
 		switch {
-		case i == 0 && ('0' <= c && c <= '9'):
-			return desc, fmt.Errorf("The first character from a camel case name is never expected to be a digit. Received digit: '%c'.", c)
-
-		case ('a' > c || c > 'z') && ('A' > c || c > 'Z') && c != '_':
-			if _, allowed := o.allowedSymbols[c]; !allowed {
-				return desc, fmt.Errorf("All characters from a camel case name are expected to be alphanumeric. Recieved non-alphanumeric: '%c'.", c)
-			}
-			b.WriteRune(c)
-
-		case c == '_' && b.Len() > 0:
+		case (c == ' ' || c == '_'||c=='-'||c=='+') && b.Len() > 0:
 			token := b.String()
 			_, tokenIsAcronym := o.acronyms[token]
 			if tokenIsAcronym {
@@ -58,8 +54,13 @@ func FromSnakeCase(ident string, options ...ConvOptFunc) (NameDescriptor, error)
 		case 'A' <= c && c <= 'Z':
 			b.WriteRune(c + ('a' - 'A'))
 
-		default:
+		case ('a' <= c && c <= 'z') || ('0' <= c && c <= '9'):
 			b.WriteRune(c)
+
+		default:
+			if _, allowed := o.allowedSymbols[c]; allowed {
+				b.WriteRune(c)
+			}
 		}
 	}
 

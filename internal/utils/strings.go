@@ -49,7 +49,7 @@ type condenseOpts struct {
 	// Known acronyms are flagged as so.
 	acronyms map[string]struct{} // set
 
-	// Operate on parts after a specified index.
+	// Condense parts after a specified index.
 	after int
 }
 
