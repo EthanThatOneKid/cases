@@ -51,4 +51,7 @@ func (n NameDescriptor) String(options ...BuildOptFunc) string {
 				b.WriteByte(c)
 			}
 		}
+	}
+
+	return b.String()
 }

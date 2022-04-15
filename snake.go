@@ -11,15 +11,17 @@ func (n NameDescriptor) ToSnakeCase() string {
 	return n.String(WithSnakeCase())
 }
 
-func WithSnakeCase() BuilderFunc {
-	return func(b *strings.Builder, part PartDescriptor, c rune, i, j int) {
-		switch {
-		case i > 0 && j == 0:
-			b.WriteByte('_')
-			b.WriteRune(c)
+// func WithCamelCase() BuildOptFunc {
+func WithSnakeCase() BuildOptFunc {
+	return func(o *buildOpts) {
+		o.transformChar = func(part PartDescriptor, c byte, i, j int) []byte {
+			switch {
+			case i > 0 && j == 0:
+				return []byte{'_', c}
 
-		default:
-			b.WriteRune(c)
+			default:
+				return []byte{c}
+			}
 		}
 	}
 }

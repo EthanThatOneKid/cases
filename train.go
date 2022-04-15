@@ -10,21 +10,19 @@ func (n NameDescriptor) ToTrainCase() string {
 	return n.String(WithTrainCase())
 }
 
-func WithTrainCase() BuilderFunc {
-	return func(b *strings.Builder, part PartDescriptor, c rune, i, j int) {
-		switch {
-		case j == 0 && i > 0:
-			b.WriteByte('-')
-			b.WriteRune(c - ('a' - 'A'))
+func WithTrainCase() BuildOptFunc {
+	return func(o *buildOpts) {
+		o.transformChar = func(part PartDescriptor, c byte, i, j int) []byte {
+			switch {
+			case j == 0 && i > 0:
+				return []byte{'-', c - ('a' - 'A')}
 
-		case j == 0:
-			b.WriteRune(c - ('a' - 'A'))
+			case j == 0, part.IsAcronym:
+				return []byte{c - ('a' - 'A')}
 
-		case part.IsAcronym:
-			b.WriteRune(c - ('a' - 'A'))
-
-		default:
-			b.WriteRune(c)
+			default:
+				return []byte{c}
+			}
 		}
 	}
 }
